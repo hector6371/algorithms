@@ -21,9 +21,16 @@ public class LongestRepeatingCharacterReplacementTest {
     }
 
     @Test
-    void givenLong_whenNoChanges_thenReturn2 () {
+    void givenMedium_whenNoChanges_thenReturn6 () {
+        String word = "KRSCDCSO";
+        int k = 4;
+        assertEquals(6,  new LongestRepeatingCharacterReplacement().characterReplacement(word, k));
+    }
+
+    @Test
+    void givenLong_whenNoChanges_thenReturn7 () {
         String word = "KRSCDCSONAJNHLBMDQGIFCPEKPOHQIHLTDIQGEKLRLCQNBOHNDQGHJPNDQPERNFSSSRDEQLFPCCCARFMDLHADJADAGNNSBNCJQOF";
         int k = 4;
-        assertEquals(2,  new LongestRepeatingCharacterReplacement().characterReplacement(word, k));
+        assertEquals(7,  new LongestRepeatingCharacterReplacement().characterReplacement(word, k));
     }
 }

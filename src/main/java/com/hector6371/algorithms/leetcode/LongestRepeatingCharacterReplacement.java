@@ -1,9 +1,7 @@
 package com.hector6371.algorithms.leetcode;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /*
 *
@@ -39,62 +37,70 @@ Constraints:
 */
 public class LongestRepeatingCharacterReplacement {
 
-    public static char [] ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-    Map<String, Integer> memo = new HashMap<>();
+    /* Sliding window algorithm
+mods = 4
+i
+KRSCDCSO
+j
 
-    public int characterReplacement(String s, int k) {
-        int index = 0;
-        return recursive(s, index, k);
-    }
+#1 count # chars in sliding window and save into hashmap. If we do as we proceed, no reread additional
+#2 check if sliding window can convert all the non most repeated char into the most repeated char.
+#2.a) if they could be transformed, slide right index, and store maximum
+#2.b) if they could not be transformed, slide left index
+*/
+    public int characterReplacement(String word, int k) {
+        int leftIndex = 0;
+        int rightIndex = 1;
 
-    private int recursive(String s, int index, int changesLeft) {
-        if (index >= s.length()){
-            return calculateRepeatingCharsWOReplacement(s);
-        }
-        int maxChain = 0;
-        if (changesLeft > 0) {
-            System.out.println("Iterating with string " + s + " over alphabet with changesLeft: " + changesLeft + " and index: " + index  );
-            for (char c : ALPHABET) {
-                char[] dimensionalCharArray = s.toCharArray();
-                dimensionalCharArray[index] = c;
-                String dimensionalString = String.valueOf(dimensionalCharArray);
+        int maxWindowSize = 1;
+        Map<Character, Integer> charsCount = new HashMap<>();
+        charsCount.put(word.charAt(leftIndex), 1);
 
-                int maxDimensionalChain = recursive(dimensionalString, index + 1, changesLeft - 1);
-                if (maxDimensionalChain > maxChain) {
-                    maxChain = maxDimensionalChain;
-                }
-            }
-        }
-        int untouchedStringChain = recursive (s, index + 1, changesLeft);
-        if(untouchedStringChain > maxChain){
-            maxChain = untouchedStringChain;
-        }
-        return maxChain;
-    }
-
-    private int calculateRepeatingCharsWOReplacement(String s) {
-        Optional<Integer> memoizedRepeatingCharsOptional = Optional.ofNullable(memo.get(s));
-        if (memoizedRepeatingCharsOptional.isPresent()){
-            return memoizedRepeatingCharsOptional.get();
-        }
-        int max = 0;
-        int tmpMax = 0;
-        Character latestChar = null;
-        for (char c : s.toCharArray()){
-            if (latestChar == null){
-                tmpMax = 1;
-                max = tmpMax;
-            } else if (latestChar == c){
-                tmpMax++;
-                if (tmpMax > max){
-                    max = tmpMax;
+        while (rightIndex < word.length() + 1) {
+            int windowSize = checkWindowSize( k, charsCount);
+            if (windowSize == -1){
+                //invalid, make smaller window
+                //decrease excluded char count
+                if (leftIndex < word.length() ) {
+                    char toExcludeChar = word.charAt(leftIndex);
+                    int excludedCharCount = charsCount.get(toExcludeChar);
+                    charsCount.put(toExcludeChar, --excludedCharCount);
+                    leftIndex++;
                 }
             } else {
-                tmpMax = 1;
+                //valid, persist value
+                if (windowSize > maxWindowSize){
+                    maxWindowSize = windowSize;
+                }
+
+                //increase char count
+                if (rightIndex < word.length() ){
+                    char toIncludeChar = word.charAt(rightIndex);
+                    int includedCharCount = charsCount.getOrDefault(toIncludeChar, 0);
+                    charsCount.put(toIncludeChar, ++includedCharCount);
+                }
+                //make bigger window
+                rightIndex++;
             }
-            latestChar = c;
         }
-        memo.put(s, max);
-        return max;
+        return maxWindowSize;
     }
+
+    private int checkWindowSize( int k, Map<Character, Integer> charsCount) {
+        int maxCount = 0;
+        int totalCount = 0;
+        for (Integer count: charsCount.values()){
+            if (count > maxCount){
+                maxCount = count;
+            }
+            totalCount += count;
+        }
+        int windowSize = -1;
+        if (totalCount - maxCount <= k){
+            windowSize = totalCount;
+        }
+        return windowSize;
+    }
+
+
 }
