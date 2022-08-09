@@ -1,5 +1,6 @@
-package com.hector6371.algorithms.leetcode;
+package com.hector6371.algorithms.leetcode.dp.twodimensions;
 
+import com.hector6371.algorithms.leetcode.dp.twodimensions.RegularExpressionMatching;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

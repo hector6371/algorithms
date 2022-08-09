@@ -1,6 +1,4 @@
-package com.hector6371.algorithms.leetcode;
-
-import java.util.*;
+package com.hector6371.algorithms.leetcode.dp.twodimensions;
 
 /*
 * #10

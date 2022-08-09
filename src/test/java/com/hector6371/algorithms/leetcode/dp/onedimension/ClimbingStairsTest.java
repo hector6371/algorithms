@@ -1,5 +1,6 @@
-package com.hector6371.algorithms.leetcode;
+package com.hector6371.algorithms.leetcode.dp.onedimension;
 
+import com.hector6371.algorithms.leetcode.dp.onedimension.ClimbingStairs;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

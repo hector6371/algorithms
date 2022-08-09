@@ -1,5 +1,6 @@
-package com.hector6371.algorithms.leetcode;
+package com.hector6371.algorithms.leetcode.dp.onedimension;
 
+import com.hector6371.algorithms.leetcode.dp.onedimension.WordBreak;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.hector6371.algorithms.leetcode;
+package com.hector6371.algorithms.leetcode.dp.onedimension;
 
 /*
 * #70
