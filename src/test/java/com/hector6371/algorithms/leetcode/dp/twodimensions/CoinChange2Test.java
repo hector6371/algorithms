@@ -26,10 +26,16 @@ class CoinChange2Test {
     }
 
     @Test
-    //@Timeout(1)
     void givenBigAmount_whenCoinChange_thenReturnInTime() {
         int amount = 500;
         int[] coins = new int[]{3,5,7,8,9,10,11};
         assertTimeout(Duration.ofSeconds(2), () -> new CoinChange2().change(amount, coins));
+    }
+
+    @Test
+    void givenBigAmountWithSmallNums_whenCoinChange_thenReturn12701() {
+        int amount = 500;
+        int[] coins = new int[]{1,2,5};
+        assertEquals(12701, new CoinChange2().change(amount, coins));
     }
 }

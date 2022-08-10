@@ -1,6 +1,11 @@
 package com.hector6371.algorithms.leetcode.dp.twodimensions;
 
+import java.util.Arrays;
+
 /*
+#518
+https://leetcode.com/problems/coin-change-2/submissions/
+
 You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
 Return the number of combinations that make up that amount. If that amount of money cannot be made up by any combination of the coins, return 0.
 You may assume that you have an infinite number of each kind of coin.
@@ -32,34 +37,48 @@ Constraints:
 * */
 public class CoinChange2 {
 
+    Integer [][] memo;
+
     //TOP DOWN:
-    // starting at index 1, at each iteration, a choice must be do. ¿Should we add one more coin of this coin, or should we move on with the next coin?
+    // starting at index 1, at each iteration, a choice must be done.
+    // ¿Should we add one more coin of this coin, or should we move on with the next coin?
     //
     public int change(int amount, int[] coins) {
         int index = 0;
+        memo = new Integer[amount + 1][coins.length];
         return recursive(amount, coins, index);
     }
     private int recursive(int remainingAmount, int[] coins, int index) {
         int ways = 0;
-
-        if (remainingAmount == 0){
-            ways++;
-        } else {
-            while (index < coins.length) {
-
-                if (coins[index] > remainingAmount) {
-                    index++;
-                } else if (coins[index] == remainingAmount) {
-                    index++;
+        if (index < coins.length) {
+            Integer memoizedResult = memo[remainingAmount][index];
+            if (memoizedResult != null){
+                ways = memoizedResult;
+            } else {
+                if (remainingAmount == 0) {
                     ways++;
                 } else {
-                    //add one more of the current coin
-                    ways += recursive(remainingAmount - coins[index], coins, index);
-                    //we should move to the next coin
-                    //ways += recursive(remainingAmount, coins, index + 1);
-                    index++;
+                    while (index < coins.length) {
+
+                        if (coins[index] > remainingAmount) {
+                            index++;
+                        } else if (coins[index] == remainingAmount) {
+                            index++;
+                            ways++;
+                        } else {
+                            //add one more of the current coin
+                            int substractedAmount = remainingAmount - coins[index];
+                            memo[substractedAmount][index] = recursive(substractedAmount, coins, index);
+                            ways += memo[substractedAmount][index];
+                            //we should move to the next coin
+                            index++;
+                        }
+                    }
                 }
             }
+        }
+        if (index < coins.length) {
+            memo[remainingAmount][index] = ways;
         }
         return ways;
     }
