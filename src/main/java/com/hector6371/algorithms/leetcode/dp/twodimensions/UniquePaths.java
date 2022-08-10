@@ -29,18 +29,31 @@ Constraints:
 * */
 public class UniquePaths {
 
+    int [][] memo;
     public int uniquePaths(int rows, int cols) {
-        int ways = 0;
-        if (rows > 1){
-            ways += uniquePaths(rows -1, cols);
-        }
-        if (cols > 1){
-            ways += uniquePaths(rows, cols - 1);
-        }
-        if (rows == 1 && cols == 1 ){
-            ways++;
-        }
+        memo = new int[rows + 1][cols + 1];
 
+        return recursive(rows, cols);
+    }
+
+    private int recursive(int rows, int cols) {
+        int ways = 0;
+
+        int memoizedResult = memo[rows][cols];
+        if (memoizedResult != 0){
+            ways = memoizedResult;
+        } else {
+            if (rows > 1) {
+                ways += recursive(rows - 1, cols);
+            }
+            if (cols > 1) {
+                ways += recursive(rows, cols - 1);
+            }
+            if (rows == 1 && cols == 1) {
+                ways++;
+            }
+            memo[rows][cols] = ways;
+        }
         return ways;
     }
 
