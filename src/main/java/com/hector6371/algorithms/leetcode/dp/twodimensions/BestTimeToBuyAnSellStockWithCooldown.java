@@ -36,35 +36,40 @@ public class BestTimeToBuyAnSellStockWithCooldown {
     // If you have sold the previous day, cooldown is mandatory
     // needless to say, if you sell for less than you bought, they were two non-profit operations.
     //
+
+    Integer [] [] memo;
     public int maxProfit(int[] prices) {
         int profit = 0;
         int index = 0;
-        boolean justSold = false;
-        boolean haveProduct = false;
+        int haveProduct = 0;
+        memo = new Integer[prices.length][2];
 
-        return recursive(prices, index, profit, haveProduct, justSold);
+        return recursive(prices, index, profit, haveProduct);
     }
 
-    public int recursive (int[] prices, int index, int profit, boolean haveProduct, boolean justSold){
-        if (index >= prices.length){
-            return profit;
-        } else {
-            if (justSold) {
-                //cooldown mandatory
-                return recursive(prices, index + 1, profit, false, false);
-            }
-            if (haveProduct) {
-                //if we have product, we can sell or cooldown
-                int profitSelling = recursive(prices, index + 1, profit + prices[index], false, true);
-                int profitCoolingDown = recursive(prices, index + 1, profit, true, false);
-                return max(profitSelling, profitCoolingDown);
+    public int recursive (int[] prices, int index, int profit, int haveProduct){
+        int result = 0;
+        if (index < prices.length) {
+            Integer memoizedResult = memo[index][haveProduct];
+            if (memoizedResult != null){
+                result = memoizedResult;
             } else {
-                //if we have no product, we could just buy or cooldown
-                int profitBuying = recursive(prices, index + 1, profit - prices[index], true, false);
-                int profitCoolingDown = recursive(prices, index + 1, profit, false, false);
-                return max(profitBuying, profitCoolingDown);
+                if (haveProduct == 1) {
+                    //if we have product, we can sell or cooldown
+                    //if we sell, we move index + 2, because next move cant buy
+                    int profitSelling = recursive(prices, index + 2, profit, 0);
+                    int profitCoolingDown = recursive(prices, index + 1, profit, 1);
+                    result = max(profitSelling + prices[index], profitCoolingDown);
+                } else {
+                    //if we have no product, we could just buy or cooldown
+                    int profitBuying = recursive(prices, index + 1, profit, 1);
+                    int profitCoolingDown = recursive(prices, index + 1, profit, 0);
+                    result = max(profitBuying - prices[index], profitCoolingDown);
+                }
+                memo[index][haveProduct] = result;
             }
         }
-
+        return result + profit;
     }
+
 }
