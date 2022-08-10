@@ -1,4 +1,4 @@
-package com.hector6371.algorithms.leetcode.dp.slidingwindow;
+package com.hector6371.algorithms.leetcode.slidingwindow;
 
 import com.hector6371.algorithms.leetcode.slidingwindow.MinimumWindowSubstring;
 import org.junit.jupiter.api.Test;
