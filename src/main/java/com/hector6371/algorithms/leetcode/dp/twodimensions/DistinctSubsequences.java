@@ -45,6 +45,9 @@ public class DistinctSubsequences {
     // a) delete a letter, check next letter (recurse over i++)
     // b) don't delete, check next letter (recurse over i++, j++)
     //Sum the outputs
+    // RESULTS:
+    // Runtime: 68 ms, faster than 5.12% of Java online submissions for Distinct Subsequences.
+    // Memory Usage: 49.7 MB, less than 75.22% of Java online submissions for Distinct Subsequences.
     public int numDistinct(String s, String t) {
         int i = 0, j = 0;
         memo = new Integer[s.length()][t.length()];
@@ -75,5 +78,59 @@ public class DistinctSubsequences {
             }
         }
         return solution;
+    }
+
+    /*
+    * BOTTOM-UP
+    * s = babgbag", t = "bag"
+    * XX| b | a | g | ''
+    * ==|===|===|===|===
+    * b |   |   |   | 1
+    * a |   | *1|   | 1
+    * b |   |   |   | 1
+    * g | *2|   |   | 1
+    * b |   |   |   | 1
+    * a |   |   |   | 1
+    * g |   |   |   | 1
+    * ''| 0 | 0 | 0 | 1
+    *
+    * If empty and empty, one solution possible, don't do anything
+    * If s contains characters but t is empty, there is a solution always, by deleting all the chars from s
+    * If s is empty, but t contains character, there is no solution never (as we can't delete from t), return 0
+    * *1: as left matches top, there would be the sum of solutions of removing the letter in s (going down one cell)
+    *  and not deleting anything and check next char from s and char from t. (going one diagonal down right cell)
+    * *2: as left doesn't match top, it would have the same solutions as when deleting that char in s, (going down one cell)
+    *
+    * As we need to go down and right, for getting the solution, we will start from bottom right to top left
+    */
+
+    public int numDistinctBottomUp(String s, String t) {
+        int [][] tabulation = new int[s.length() + 1][t.length() + 1];
+
+        //fill last row
+        for (int j = 0; j < t.length() + 1; j++){
+            tabulation[s.length()][j] = 0;
+        }
+
+        //fill last col
+        for (int i = 0; i < s.length() + 1; i++){
+                tabulation[i][t.length()] = 1;
+        }
+
+        //this value overrides the last col initialization... But keep it for verbosity
+        tabulation[s.length()][t.length()] = 1;
+
+        for (int i = s.length() - 1; i >= 0; i--){
+            for (int j = t.length() - 1; j >= 0; j--) {
+                int result = 0;
+                result += tabulation[i + 1][j];
+                if (s.charAt(i) == t.charAt(j)){
+                    result += tabulation[i+1][j+1];
+                }
+                tabulation[i][j] = result;
+            }
+        }
+
+        return tabulation[0][0];
     }
 }
