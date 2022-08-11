@@ -1,8 +1,6 @@
 package com.hector6371.algorithms.leetcode.dp.twodimensions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
@@ -30,6 +28,8 @@ Constraints:
 * */
 public class BurstBallons {
 
+    Map<List<Integer>, Integer> memo = new HashMap<>();
+
     //TOP-DOWN
     //Recursively, while there are balloons, you could either explode one or move to the next, wrapping the last with the first one
     //
@@ -37,24 +37,31 @@ public class BurstBallons {
         List<Integer> balloonList = Arrays.stream(nums)
                 .boxed()
                 .collect(Collectors.toList());
-        ;
         return recursive(balloonList);
     }
 
     private int recursive(List<Integer> balloonList) {
         int value = 0;
-        for (int i = 0; i< balloonList.size(); i++){
-            //remove i from the nums
-            //collect the coins
-            List<Integer> remainingBalloonList = new ArrayList<>(balloonList);
-            int coinsCollected = collectCoins(remainingBalloonList, i);
-            remainingBalloonList.remove(i);
 
-            int recursiveValue = recursive(remainingBalloonList);
-            if (coinsCollected + recursiveValue > value){
-                value = coinsCollected + recursiveValue;
+        Integer memoizedCoins = memo.get(balloonList);
+        if (memoizedCoins == null){
+            for (int i = 0; i< balloonList.size(); i++){
+                //remove i from the nums
+                //collect the coins
+                List<Integer> remainingBalloonList = new ArrayList<>(balloonList);
+                int coinsCollected = collectCoins(remainingBalloonList, i);
+                remainingBalloonList.remove(i);
+
+                int recursiveValue = recursive(remainingBalloonList);
+                if (coinsCollected + recursiveValue > value){
+                    value = coinsCollected + recursiveValue;
+                }
             }
+            memo.put(balloonList, value);
+        } else {
+            value = memoizedCoins;
         }
+
         return value;
     }
 
