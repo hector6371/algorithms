@@ -37,6 +37,8 @@ Constraints:
 
 public class DistinctSubsequences {
 
+    Integer [][] memo;
+
     //TOP-DOWN
     //index i for s, j, for t
     //Recursively, for a String, we could either:
@@ -45,6 +47,7 @@ public class DistinctSubsequences {
     //Sum the outputs
     public int numDistinct(String s, String t) {
         int i = 0, j = 0;
+        memo = new Integer[s.length()][t.length()];
         return recursive(s, t, i, j);
     }
 
@@ -57,13 +60,19 @@ public class DistinctSubsequences {
             //we would need more chars from s to fill t, so no solution available here
             solution = 0;
         } else {
-            //if character matches, we could delete it or stick with it
-            //if it doesn't match, we could only delete it
-            if (s.charAt(i) == t.charAt(j)){
-                solution += recursive(s, t, i+1, j+1);
+            Integer memoizedResult = memo[i][j];
+            if (memoizedResult == null) {
+                //if character matches, we could delete it or stick with it
+                //if it doesn't match, we could only delete it
+                if (s.charAt(i) == t.charAt(j)) {
+                    solution += recursive(s, t, i + 1, j + 1);
+                }
+                //delete it, so we should only worry on next the subproblem of the next s char
+                solution += recursive(s, t, i + 1, j);
+                memo[i][j] = solution;
+            } else {
+                solution = memoizedResult;
             }
-            //delete it, so we should only worry on next the subproblem of the next s char
-            solution += recursive(s, t, i+1, j);
         }
         return solution;
     }
