@@ -12,6 +12,11 @@ An interleaving of two strings s and t is a configuration where s and t are divi
     s = s1 + s2 + ... + sn
     t = t1 + t2 + ... + tm
     |n - m| <= 1
+(Solver's note => This info make me a mess...taking into account the partitions overcomplicated the problem.
+It is not neccesary because, when choosing one char, it could be from the previous one string (partitions stay the same),
+or from the other one (partition++). But, in the latter case, it would then be the same, picking other char from the latter
+string (partitions stay the same) or from the first one (partition--), so partition difference keep balancing between -1
+and 1 by themselves)
     The interleaving is s1 + t1 + s2 + t2 + s3 + t3 + ... or t1 + s1 + t2 + s2 + t3 + s3 + ...
 Note: a + b is the concatenation of strings a and b.
 
@@ -93,8 +98,53 @@ public class InterleavingString {
     }
 
     //BOTTOM-UP solution
-    //public boolean isInterleave(String s1, String s2, String s3) {
+    /*
+    * "aabcc"
+    * "dbbca"
+    * output => aadbbcbcac
+    *
+    *    | d | b | b | c | a | ""
+    * ===|===|===|===|===|===|===
+    * a  |   |   |   |   |   |
+    * a  |   |   |   |   |   |
+    * b  |   | *4|   |   |   |
+    * c  |   |   |   |   |   |
+    * c  |   |   |   |   | *3|
+    * "" |   |   |   |   | *2| *1
+    *
+    *accumulating the remaining letters...we try to understand the problem
+    *1:  "" and "" is true
+    *2: combining "" and 'a', we could only get a. Taking the last char from the string, is 'c', so False
+    *3: combining 'a' and 'c', whe could get 'ac' or 'ca'. Taking the last two chars from the desired string, are 'ac'. We can get it, True
+    *4: this position is at the 3+2 index. The target, at the 5th index has a b..
+    *   is there a 'b' at the left? True, so solution might be true if we use that char and the subproblem without this char is true (down cell)
+    *   is there a 'b' at the top? True, so solution might be true if we use that char and the subproblem without this char is true (right cell)
+    *   If it weren't any b neither at the top nor at the left, it could not be constructed the output, return false.
+    *
+    * As we go right and down, and we have base cases at the bottom, we could build the array solution bottom up
+    * and retrieve the solution at the 0,0
+    *
+    * */
+    public boolean isInterleaveTabulation(String s1, String s2, String s3) {
+        if (s1.length() + s2.length() != s3.length()){
+            return false;
+        }
+        int [][] tabulation = new int [s1.length() + 1][ s2.length() + 1];
+        tabulation [s1.length()][s2.length()] = 1; //'' vs ''
 
+        for (int i = s1.length(); i >= 0; i--){
+            for (int j = s2.length(); j >= 0; j--) {
+                // if not on the bottom, check same char and lower cell subproblem
+                if (i < s1.length() && s1.charAt(i) == s3.charAt(i+j) && tabulation[i+1][j] == 1){
+                    tabulation[i][j] = 1;
+                }
+                // if not on the right, check same char and right cell subproblem
+                if (j < s2.length() && s2.charAt(j) == s3.charAt(i+j) && tabulation[i][j+1] == 1){
+                    tabulation[i][j] = 1;
+                }
+            }
+        }
 
-    //}
+        return tabulation[0][0] == 1;
+    }
 }
