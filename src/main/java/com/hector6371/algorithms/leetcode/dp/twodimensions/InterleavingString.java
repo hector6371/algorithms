@@ -55,6 +55,8 @@ public class InterleavingString {
     // add a letter of s2 and increment the partition of s2
     // we could decide this depending on matching on s3. if both options matches, go on with both
     // and return true if any one works.
+    // Runtime: 3 ms, faster than 70.78% of Java online submissions for Interleaving String.
+    // Memory Usage: 41.5 MB, less than 87.33% of Java online submissions for Interleaving String.
     public boolean isInterleave(String s1, String s2, String s3) {
         int s1Index = 0;
         int s2Index = 0;
@@ -125,6 +127,9 @@ public class InterleavingString {
     * and retrieve the solution at the 0,0
     *
     * */
+    //Runtime: 12 ms, faster than 14.64% of Java online submissions for Interleaving String.
+    //Memory Usage: 42.6 MB, less than 35.72% of Java online submissions for Interleaving String.
+
     public boolean isInterleaveTabulation(String s1, String s2, String s3) {
         if (s1.length() + s2.length() != s3.length()){
             return false;
