@@ -42,6 +42,9 @@ Follow up: Could you solve it using only O(s2.length) additional memory space?
 * */
 public class InterleavingString {
 
+
+    Integer [][]memo;
+
     //TOP-DOWN solution
     // Recursively, we could either add one letter of s1 and increment the partitions of s1 or
     // add a letter of s2 and increment the partition of s2
@@ -51,45 +54,42 @@ public class InterleavingString {
         int s1Index = 0;
         int s2Index = 0;
         //int s3Index = s1Index + s2Index;
-        int partitionsDiff = 0; //s1 partitions - s2 partitions
         Boolean latestFrom1 = null; //not to take in account for first letter
         //keep track of latter added letter so we now if we are partitioning more or not
-        return recursive(s1, s2, s3, s1Index, s2Index, partitionsDiff, latestFrom1);
-
-
+        memo = new Integer [s1.length()][s2.length()];
+        if (s1.length() + s2.length() != s3.length()) {
+            return false;
+        } else {
+            return recursive(s1, s2, s3, s1Index, s2Index, latestFrom1);
+        }
     }
 
-    private static boolean recursive(String s1, String s2, String s3, int s1Index, int s2Index, int partitionsDiff, Boolean latestFrom1) {
+    private boolean recursive(String s1, String s2, String s3, int s1Index, int s2Index, Boolean latestFrom1) {
+        boolean result;
         if (s1Index == s1.length()){
-            return s2.substring(s2Index).equals(s3.substring(s1Index + s2Index));
+            result = s2.substring(s2Index).equals(s3.substring(s1Index + s2Index));
         }else if (s2Index == s2.length()){
-            return s1.substring(s1Index).equals(s3.substring(s1Index + s2Index));
+            result = s1.substring(s1Index).equals(s3.substring(s1Index + s2Index));
         } else {
-            //return abs(partitionsDiff) == 1 || partitionsDiff == 0;
-            char target = s3.charAt(s1Index + s2Index);
-            if (s1.charAt(s1Index) == target && s2.charAt(s2Index) == target) {
-                return recursive(s1, s2, s3, s1Index + 1, s2Index, partitionsDiff + 1, true)
-                        || recursive(s1, s2, s3, s1Index, s2Index + 1, partitionsDiff - 1, false);
-            } else if (s1.charAt(s1Index) == target) {
-                if (latestFrom1 == null){
-                    latestFrom1 = true;
-                } else if (!latestFrom1) {
-                    partitionsDiff++;
-                    latestFrom1 = true;
+            Integer memoizedResult = memo[s1Index][s2Index];
+            if (memoizedResult != null){
+                result = memoizedResult == 1;
+            } else {
+                char target = s3.charAt(s1Index + s2Index);
+                if (s1.charAt(s1Index) == target && s2.charAt(s2Index) == target) {
+                    result = recursive(s1, s2, s3, s1Index + 1, s2Index, true)
+                            || recursive(s1, s2, s3, s1Index, s2Index + 1, false);
+                } else if (s1.charAt(s1Index) == target) {
+                    result = recursive(s1, s2, s3, s1Index + 1, s2Index, true);
+                } else if (s2.charAt(s2Index) == target) {
+                    result = recursive(s1, s2, s3, s1Index, s2Index + 1, false);
+                } else { //no matches
+                    result = false;
                 }
-                return recursive(s1, s2, s3, s1Index + 1, s2Index, partitionsDiff, latestFrom1);
-            } else if (s2.charAt(s2Index) == target) {
-                if (latestFrom1 == null){
-                    latestFrom1 = false;
-                } else if (latestFrom1) {
-                    partitionsDiff--;
-                    latestFrom1 = false;
-                }
-                return recursive(s1, s2, s3, s1Index , s2Index + 1, partitionsDiff, latestFrom1);
-            } else { //no matches
-                return false;
+                memo[s1Index][s2Index] = result ? 1 : 0;
             }
         }
+        return result;
     }
 
     //BOTTOM-UP solution

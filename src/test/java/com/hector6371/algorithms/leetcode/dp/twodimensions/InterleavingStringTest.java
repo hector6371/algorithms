@@ -2,6 +2,8 @@ package com.hector6371.algorithms.leetcode.dp.twodimensions;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InterleavingStringTest {
@@ -17,8 +19,23 @@ class InterleavingStringTest {
         assertFalse(new InterleavingString().isInterleave(s1, s2, s3) );
     }
     @Test
-    void given_whenIsInterleave_thenReturnTrue() {
+    void givenEmpty_whenIsInterleave_thenReturnTrue() {
         String s1 = "", s2 = "", s3 ="";
         assertTrue(new InterleavingString().isInterleave(s1, s2, s3) );
+    }
+
+    @Test
+    void givenLong_whenIsInterleave_thenReturnInTime() {
+        String s1 = "bbbbbabbbbabaababaaaabbababbaaabbabbaaabaaaaababbbababbbbbabbbbababbabaabababbbaabababababbbaaababaa",
+                s2 = "babaaaabbababbbabbbbaabaabbaabbbbaabaaabaababaaaabaaabbaaabaaaabaabaabbbbbbbbbbbabaaabbababbabbabaab",
+                s3 ="babbbabbbaaabbababbbbababaabbabaabaaabbbbabbbaaabbbaaaaabbbbaabbaaabababbaaaaaabababbababaababbababbbababbbbaaaabaabbabbaaaaabbabbaaaabbbaabaaabaababaababbaaabbbbbabbbbaabbabaabbbbabaaabbababbabbabbab";
+        assertTimeout(Duration.ofMillis(500), () -> new InterleavingString().isInterleave(s1, s2, s3) );
+    }
+    @Test
+    void givenResultSmallerThanInputs_whenIsInterleave_thenReturnFalse() {
+        String s1 = "aaaa",
+                s2 = "aa",
+                s3 ="aaa";
+        assertFalse(new InterleavingString().isInterleave(s1, s2, s3) );
     }
 }
