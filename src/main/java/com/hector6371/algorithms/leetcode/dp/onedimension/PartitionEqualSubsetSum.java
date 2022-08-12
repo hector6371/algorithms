@@ -23,6 +23,7 @@ Constraints:
 * */
 public class PartitionEqualSubsetSum {
 
+    Integer [][] memo;
     //Sum of both subsets are the same, means half is in one and half is in the other... It means, one subset needs
     // the half of the total
     public boolean canPartition(int[] nums) {
@@ -34,6 +35,8 @@ public class PartitionEqualSubsetSum {
             return false;
         } else {
             int target = sum / 2;
+
+            memo = new Integer[nums.length][target + 1];
             int index = 0;
             return canPartition(nums, target, index);
         }
@@ -43,18 +46,23 @@ public class PartitionEqualSubsetSum {
     // a) if included, lower the target, and increase the index, and recurse
     // b) if not included, just increase the index and recurse
     private boolean canPartition(int[] nums, int target, int index) {
-        if (index == nums.length){
-            if (target == 0){
-                return true;
-            } else {
-                return false;
-            }
-        } else if (target < 0){ // as they are all positive
-            return false;
+        boolean canPartition;
+
+        if (index == nums.length) {
+            canPartition = target == 0;
+        } else if (target < 0) { // as they are all positive
+            canPartition = false;
         } else {
-            boolean canPartitionIfIncluded = canPartition(nums, target - nums[index], index + 1);
-            boolean canPartitionIfNotIncluded = canPartition(nums, target, index + 1);
-            return canPartitionIfIncluded || canPartitionIfNotIncluded;
+            Integer memoizedResult = memo[index][target];
+            if (memoizedResult == null) {
+                boolean canPartitionIfIncluded = canPartition(nums, target - nums[index], index + 1);
+                boolean canPartitionIfNotIncluded = canPartition(nums, target, index + 1);
+                canPartition = canPartitionIfIncluded || canPartitionIfNotIncluded;
+                memo[index][target] = canPartition ? 1 : 0;
+            } else {
+                canPartition = memoizedResult == 1;
+            }
         }
+        return canPartition;
     }
 }
