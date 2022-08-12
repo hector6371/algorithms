@@ -11,7 +11,7 @@ class BurstBallonsTest {
     @Test
     void given3158_whenMaxCoins_thenReturn167() {
         int [] nums = new int[]{3,1,5,8};
-        assertEquals(167, new BurstBallons().maxCoinsDp(nums));
+        assertEquals(167, new BurstBallons().maxCoins(nums));
     }
 
     @Test
