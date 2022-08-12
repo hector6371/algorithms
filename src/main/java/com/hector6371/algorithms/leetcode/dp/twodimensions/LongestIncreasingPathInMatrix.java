@@ -35,6 +35,7 @@ Constraints:
 * */
 public class LongestIncreasingPathInMatrix {
 
+    Integer [][] memo;
     //TOP-DOWN approach
     //start at one (test each one),
     // 1) add to visited
@@ -48,6 +49,7 @@ public class LongestIncreasingPathInMatrix {
     // no, we don't need to keep track of visited, because visited will always have lower values than current as it is required to increase for each movement
     // we could cache only by current position, because of the previous sentence
     public int longestIncreasingPath(int[][] matrix) {
+        memo = new Integer[matrix.length][matrix[0].length];
         int path = 0;
         for (int i = 0; i < matrix.length; i++){
             for (int j = 0; j < matrix[0].length; j++) {
@@ -59,10 +61,15 @@ public class LongestIncreasingPathInMatrix {
 
     private int recursive(int[][] matrix, int i, int j) {
         int maxPath = 1;
-        List<Cell> neighbors = getNeighbors(matrix, i, j);
-        for (Cell cell : neighbors) {
-            int path = recursive(matrix, cell.getX(), cell.getY());
-            maxPath = max(maxPath, path + 1);
+        Integer memoizedResult = memo[i][j];
+        if (memoizedResult == null) {
+            List<Cell> neighbors = getNeighbors(matrix, i, j);
+            for (Cell cell : neighbors) {
+                int path = recursive(matrix, cell.getX(), cell.getY());
+                maxPath = max(maxPath, path + 1);
+            }
+        } else {
+            maxPath = memoizedResult;
         }
         return maxPath;
     }
