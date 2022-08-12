@@ -1,7 +1,6 @@
 package com.hector6371.algorithms.leetcode.dp.twodimensions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.max;
 
@@ -35,6 +34,7 @@ Constraints:
 * */
 public class LongestIncreasingPathInMatrix {
 
+    Map<Cell, List<Cell>> cellToNeighborsMap = new HashMap<>();
     Integer [][] memo;
     //TOP-DOWN approach
     //start at one (test each one),
@@ -68,6 +68,7 @@ public class LongestIncreasingPathInMatrix {
                 int path = recursive(matrix, cell.getX(), cell.getY());
                 maxPath = max(maxPath, path + 1);
             }
+            memo[i][j] = maxPath;
         } else {
             maxPath = memoizedResult;
         }
@@ -75,24 +76,29 @@ public class LongestIncreasingPathInMatrix {
     }
 
     private List<Cell> getNeighbors(int[][] matrix, int i, int j) {
-        int value = matrix[i][j];
+        Cell currentCell = new Cell(i,j);
+        List<Cell> neighbors = cellToNeighborsMap.computeIfAbsent(currentCell, cell -> new ArrayList<>());
+        if (neighbors.isEmpty()){
+            neighbors = new ArrayList<>();
 
-        List<Cell> neighbors = new ArrayList<>();
-        //left
-        if (i > 0 && matrix[i-1][j] > value){
-            neighbors.add(new Cell(i-1, j));
-        }
-        //right
-        if (i < matrix.length - 1 && matrix[i+1][j] > value){
-            neighbors.add(new Cell(i+1, j));
-        }
-        //up
-        if (j > 0 && matrix[i][j-1] > value){
-            neighbors.add(new Cell(i, j-1));
-        }
-        //right
-        if (j < matrix[0].length - 1 && matrix[i][j+1] > value){
-            neighbors.add(new Cell(i, j+1));
+            int value = matrix[i][j];
+
+            //left
+            if (i > 0 && matrix[i-1][j] > value){
+                neighbors.add(new Cell(i-1, j));
+            }
+            //right
+            if (i < matrix.length - 1 && matrix[i+1][j] > value){
+                neighbors.add(new Cell(i+1, j));
+            }
+            //up
+            if (j > 0 && matrix[i][j-1] > value){
+                neighbors.add(new Cell(i, j-1));
+            }
+            //right
+            if (j < matrix[0].length - 1 && matrix[i][j+1] > value){
+                neighbors.add(new Cell(i, j+1));
+            }
         }
 
         return neighbors;
@@ -113,6 +119,19 @@ public class LongestIncreasingPathInMatrix {
 
         public int getY() {
             return y;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Cell cell = (Cell) o;
+            return x == cell.x && y == cell.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
         }
     }
 }
