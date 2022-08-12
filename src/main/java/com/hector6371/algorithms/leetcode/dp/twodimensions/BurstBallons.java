@@ -32,7 +32,6 @@ public class BurstBallons {
 
     //TOP-DOWN
     //Recursively, while there are balloons, you could either explode one or move to the next, wrapping the last with the first one
-    //
     public int maxCoins(int[] nums) {
         List<Integer> balloonList = Arrays.stream(nums)
                 .boxed()
@@ -71,5 +70,36 @@ public class BurstBallons {
         int followingExplodedBalloon = index + 1  == remainingBalloonList.size() ? 1 : remainingBalloonList.get(index + 1);
 
         return explodedBalloon * previousExplodedBalloon * followingExplodedBalloon;
+    }
+
+    //What if we think out of the box. What would happen if we exploed last an element?
+    // The value we would have is its value (*1*1) added to the left exploding subarray and the right exploding subarray
+    // having itself on the middle. (As it is the last element, its left and its right doesn't connect between them, ever)
+    // considering i, j as left, and right indexes
+    public int maxCoinsDp(int[] nums) {
+        int i = 0;
+        int j = nums.length - 1;
+       return subproblem(nums, i, j);//dp
+    }
+
+    private int subproblem(int[] nums, int i, int j) {
+        int maxCollectedCoins = 0;
+        for (int toExplodeIndex = i; toExplodeIndex <= j; toExplodeIndex++){
+            int collectedCoins = collectCoins(nums, toExplodeIndex)
+                    + subproblem(nums, i , toExplodeIndex - 1)
+                    + subproblem(nums, toExplodeIndex + 1, j);
+            if (collectedCoins > maxCollectedCoins){
+                maxCollectedCoins = collectedCoins;
+            }
+        }
+        return maxCollectedCoins;
+    }
+
+    private int collectCoins(int[] nums, int explodedBalloonIndex) {
+        int explodedBalloonCoins = nums[explodedBalloonIndex];
+
+        int previousExplodedBalloonCoins = explodedBalloonIndex == 0 ? 1: nums[explodedBalloonIndex - 1] ;
+        int followingExplodedBalloonCoins = explodedBalloonIndex == nums.length - 1 ? 1 : nums[explodedBalloonIndex + 1] ;
+        return explodedBalloonCoins * previousExplodedBalloonCoins * followingExplodedBalloonCoins;
     }
 }
