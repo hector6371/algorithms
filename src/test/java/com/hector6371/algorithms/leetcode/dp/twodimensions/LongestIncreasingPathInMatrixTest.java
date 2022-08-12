@@ -23,4 +23,14 @@ class LongestIncreasingPathInMatrixTest {
         int[][] matrix = new int[][]{{1}};
         assertEquals(1, new LongestIncreasingPathInMatrix().longestIncreasingPath(matrix));
     }
+    @Test
+    void given1x4Matrix_whenLongestIncreasingPath_thenReturn4() {
+        int[][] matrix = new int[][]{{0,1,5,5}};
+        assertEquals(3, new LongestIncreasingPathInMatrix().longestIncreasingPath(matrix));
+    }
+    @Test
+    void given4x1Matrix_whenLongestIncreasingPath_thenReturn4() {
+        int[][] matrix = new int[][]{{0},{1},{5},{5}};
+        assertEquals(3, new LongestIncreasingPathInMatrix().longestIncreasingPath(matrix));
+    }
 }

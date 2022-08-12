@@ -50,7 +50,7 @@ public class LongestIncreasingPathInMatrix {
     public int longestIncreasingPath(int[][] matrix) {
         int path = 0;
         for (int i = 0; i < matrix.length; i++){
-            for (int j = 0; j < matrix.length; j++) {
+            for (int j = 0; j < matrix[0].length; j++) {
                 path = max(path, recursive(matrix, i, j));
             }
         }
