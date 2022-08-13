@@ -36,19 +36,17 @@ public class LongestIncreasingSubsequence {
     // if not deleted, move index forward, increase length
     //keep the max decision
     public int lengthOfLIS(int[] nums) {
-        int index = 0;
-        int length = 0;
-        //we start at second value so we don't have to control iabexception (on first case)
-        return recursive(nums, index, length, Integer.MIN_VALUE);
+        return recursive(nums, 0, -1, 0);
     }
 
-    private int recursive(int[] nums, int index, int length, int latestValue) {
-        if (index >= nums.length){
+    private int recursive(int[] nums, int enquiryIndex, int lastChosenIndex, int length ) {
+        if (enquiryIndex >= nums.length){
             return length;
         }
-        int newLength = recursive(nums, index + 1, length, latestValue); //delete and recurse
-        if (nums[index] > latestValue){
-            newLength = max(newLength, recursive(nums, index + 1, length + 1, nums[index]));
+        int newLength = recursive(nums, enquiryIndex + 1, lastChosenIndex, length); //delete and recurse
+        //if none has been added yet or the new value is bigger than the previously added, recurse
+        if (lastChosenIndex == -1 || nums[enquiryIndex] > nums[lastChosenIndex]) {
+            newLength = max(newLength, recursive(nums, enquiryIndex + 1, enquiryIndex, length + 1));
         }
         return newLength;
     }
